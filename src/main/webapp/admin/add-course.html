@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add New Course</title>
+    <style>
+        /* Modern CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h1:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-submit {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-cancel {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e1e5e9;
+        }
+
+        .btn-cancel:hover {
+            background: #e9ecef;
+            border-color: #dee2e6;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .form-note {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #666;
+            border-left: 4px solid #667eea;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>➕ Add New Course</h1>
+        <p class="subtitle">Fill in the course details below</p>
+
+        <form action="AddCourseServlet" method="post">
+            <div class="form-group">
+                <label for="courseCode">Course Code <span class="required">*</span></label>
+                <input type="text" id="courseCode" name="courseCode" required
+                       placeholder="e.g., CS101" maxlength="20"
+                       pattern="[A-Z]{2,4}\d{3}"
+                       title="Example: CS101, MATH201, ENG102">
+            </div>
+
+            <div class="form-group">
+                <label for="courseName">Course Name <span class="required">*</span></label>
+                <input type="text" id="courseName" name="courseName" required
+                       placeholder="e.g., Introduction to Programming" maxlength="100">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description"
+                          placeholder="Enter course description... (Optional)"
+                          maxlength="500"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="credits">Credits <span class="required">*</span></label>
+                <select id="credits" name="credits" required>
+                    <option value="" disabled selected>Select credits</option>
+                    <option value="1">1 Credit</option>
+                    <option value="2">2 Credits</option>
+                    <option value="3" selected>3 Credits</option>
+                    <option value="4">4 Credits</option>
+                    <option value="5">5 Credits</option>
+                </select>
+            </div>
+
+            <div class="form-note">
+                <strong>Note:</strong> All fields marked with <span class="required">*</span> are required.
+                Course code format: Department code (2-4 letters) + Course number (3 digits).
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-submit">Add Course</button>
+                <a href="dashboard.html" class="btn btn-cancel">Cancel</a>
+            </div>
+        </form>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="ListCoursesServlet" class="back-link">📋 View All Courses</a> |
+            <a href="dashboard.html" class="back-link">🏠 Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        // Auto-format course code to uppercase
+        document.getElementById('courseCode').addEventListener('input', function(e) {
+            this.value = this.value.toUpperCase();
+        });
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const courseCode = document.getElementById('courseCode').value;
+            const courseName = document.getElementById('courseName').value;
+            const credits = document.getElementById('credits').value;
+
+            if (!courseCode || !courseName || !credits) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+                return false;
+            }
+
+            // Validate course code format
+            const codePattern = /^[A-Z]{2,4}\d{3}$/;
+            if (!codePattern.test(courseCode)) {
+                e.preventDefault();
+                alert('Course code format is invalid. Example: CS101, MATH201');
+                return false;
+            }
+
+            return true;
+        });
+    </script>
+</body>
+</html>
