@@ -343,18 +343,17 @@
                         </td>
                         <td class="<%= room.getIsActive() ? "status-active" : "status-inactive" %>">
                             <%= room.getIsActive() ? "Active" : "Inactive" %>
-                        </td>
                         <td>
-                            <form action="${pageContext.request.contextPath}/admin/ClassroomServlet"
-                                  method="post" style="display: inline;">
-                                <input type="hidden" name="action" value="toggle">
-                                <input type="hidden" name="roomId" value="<%= room.getRoomId() %>">
-                                <button type="submit" class="btn"
-                                        title="<%= room.getIsActive() ? "Deactivate" : "Activate" %>">
-                                    <%= room.getIsActive() ? "Deactivate" : "Activate" %>
-                                </button>
-                            </form>
-                        </td>
+    <form action="${pageContext.request.contextPath}/admin/ClassroomServlet"
+          method="post" style="display: inline;">
+        <input type="hidden" name="action" value="delete">
+        <input type="hidden" name="roomId" value="<%= room.getRoomId() %>">
+        <button type="submit" class="btn btn-danger"
+                onclick="return confirm('Delete classroom <%= room.getBuilding() %> <%= room.getRoomNumber() %> permanently?\n\nThis will delete from database and you can re-add it.')">
+            Delete
+        </button>
+    </form>
+</td>
                     </tr>
                     <%
                         }

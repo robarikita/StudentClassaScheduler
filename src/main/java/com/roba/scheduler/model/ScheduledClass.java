@@ -1,16 +1,20 @@
 package com.roba.scheduler.model;
 
 public class ScheduledClass {
-    private int scheduleId;
-    private Course course;
-    private Instructor instructor;
-    private Classroom classroom;
-    private TimeSlot timeSlot;
-    private Semester semester;
+
+
+
+     private int scheduleId;
+    private Course course;           // Object reference
+    private Instructor instructor;   // Object reference
+    private Classroom classroom;     // Object reference
+    private TimeSlot timeSlot;       // Object reference
+    private Semester semester;       // Object reference
     private String sectionNumber;
     private int maxCapacity;
     private int currentEnrollment;
     private boolean isActive;
+
 
     // Constructors
     public ScheduledClass() {}
@@ -72,5 +76,64 @@ public class ScheduledClass {
             instructor != null ? instructor.getFullName() : "TBA",
             classroom != null ? classroom.getFullRoomName() : "TBA",
             timeSlot != null ? timeSlot.getDisplayTime() : "TBA");
+    }
+
+
+
+
+    public int getCourseId() {
+        return (course != null) ? course.getCourseId() : 0;
+    }
+
+    public int getInstructorId() {
+        return (instructor != null) ? instructor.getInstructorId() : 0;
+    }
+
+    public int getRoomId() {
+        return (classroom != null) ? classroom.getRoomId() : 0;
+    }
+
+    public int getSlotId() {
+        return (timeSlot != null) ? timeSlot.getSlotId() : 0;
+    }
+
+    public int getSemesterId() {
+        return (semester != null) ? semester.getSemesterId() : 0;
+    }
+
+    // Also add these setters if needed:
+    public void setCourseId(int courseId) {
+        if (course == null) {
+            course = new Course();
+        }
+        course.setCourseId(courseId);
+    }
+
+    public void setInstructorId(int instructorId) {
+        if (instructor == null) {
+            instructor = new Instructor();
+        }
+        instructor.setInstructorId(instructorId);
+    }
+
+    public void setRoomId(int roomId) {
+        if (classroom == null) {
+            classroom = new Classroom();
+        }
+        classroom.setRoomId(roomId);
+    }
+
+    public void setSlotId(int slotId) {
+        if (timeSlot == null) {
+            timeSlot = new TimeSlot();
+        }
+        timeSlot.setSlotId(slotId);
+    }
+
+    public void setSemesterId(int semesterId) {
+        if (semester == null) {
+            semester = new Semester();
+        }
+        semester.setSemesterId(semesterId);
     }
 }

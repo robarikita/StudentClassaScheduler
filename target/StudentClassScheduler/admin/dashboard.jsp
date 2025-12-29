@@ -366,7 +366,101 @@
             </div>
         </div>
     </div>
+<!-- ID Management Panel -->
+<div class="feature-card" style="grid-column: span 2;">
+    <h3>🔧 ID Management Tools</h3>
+    <p>Manage database ID sequences and reuse deleted IDs</p>
 
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;">
+
+        <!-- Fix All IDs -->
+        <form action="${pageContext.request.contextPath}/admin/IDManagementServlet" method="post">
+            <input type="hidden" name="action" value="fixAll">
+            <button type="submit" class="btn btn-primary"
+                    onclick="return confirm('Fix auto-increment for all tables?')">
+                Fix All ID Sequences
+            </button>
+        </form>
+
+        <!-- Compact All IDs -->
+        <form action="${pageContext.request.contextPath}/admin/IDManagementServlet" method="post">
+            <input type="hidden" name="action" value="compactAll">
+            <button type="submit" class="btn btn-warning"
+                    onclick="return confirm('Compact all IDs (reorganize sequentially)? This may take time.')">
+                Compact All IDs
+            </button>
+        </form>
+
+        <!-- Individual Table Management -->
+        <select id="tableSelect" style="grid-column: span 2; padding: 8px;">
+            <option value="">Select Table to Manage</option>
+            <option value="classrooms">Classrooms</option>
+            <option value="instructors">Instructors</option>
+            <option value="courses">Courses</option>
+            <option value="time_slots">Time Slots</option>
+            <option value="semesters">Semesters</option>
+            <option value="scheduled_classes">Scheduled Classes</option>
+            <option value="students">Students</option>
+        </select>
+
+        <!-- Fix Selected Table -->
+        <form action="${pageContext.request.contextPath}/admin/IDManagementServlet" method="post"
+              id="fixForm" style="display: none;">
+            <input type="hidden" name="action" value="fix">
+            <input type="hidden" name="tableName" id="fixTableName">
+            <button type="submit" class="btn btn-success">
+                Fix ID Sequence
+            </button>
+        </form>
+
+        <!-- Compact Selected Table -->
+        <form action="${pageContext.request.contextPath}/admin/IDManagementServlet" method="post"
+              id="compactForm" style="display: none;">
+            <input type="hidden" name="action" value="compact">
+            <input type="hidden" name="tableName" id="compactTableName">
+            <button type="submit" class="btn btn-orange">
+                Compact IDs
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+// Show/hide table-specific buttons
+document.getElementById('tableSelect').addEventListener('change', function() {
+    const tableName = this.value;
+    const fixForm = document.getElementById('fixForm');
+    const compactForm = document.getElementById('compactForm');
+
+    if (tableName) {
+        // Set table names in forms
+        document.getElementById('fixTableName').value = tableName;
+        document.getElementById('compactTableName').value = tableName;
+
+        // Show forms
+        fixForm.style.display = 'block';
+        compactForm.style.display = 'block';
+
+        // Update button texts
+        const fixBtn = fixForm.querySelector('button');
+        const compactBtn = compactForm.querySelector('button');
+        const tableDisplay = tableName.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+        fixBtn.textContent = `Fix ${tableDisplay} IDs`;
+        fixBtn.onclick = function() {
+            return confirm(`Fix auto-increment for ${tableDisplay} table?`);
+        };
+
+        compactBtn.textContent = `Compact ${tableDisplay} IDs`;
+        compactBtn.onclick = function() {
+            return confirm(`Compact ${tableDisplay} IDs (reorganize sequentially)?`);
+        };
+    } else {
+        fixForm.style.display = 'none';
+        compactForm.style.display = 'none';
+    }
+});
+</script>
     <script>
         // Add animation to cards on page load
         document.addEventListener('DOMContentLoaded', function() {

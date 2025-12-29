@@ -149,7 +149,7 @@ public class SemesterServlet extends HttpServlet {
                     "/admin/semesters.jsp?message=Semester+deleted+successfully");
             } else {
                 response.sendRedirect(request.getContextPath() +
-                    "/admin/semesters.jsp?error=Failed+to+delete+semester");
+                    "/admin/semesters.jsp?error=Failed+to+delete+semester+(may+have+classes+scheduled)");
             }
 
         } catch (NumberFormatException e) {

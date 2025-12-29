@@ -17,6 +17,7 @@ com\roba\scheduler\model\ScheduledClass.class
 com\roba\scheduler\servlet\admin\AddCourseServlet.class
 com\roba\scheduler\servlet\admin\UpdateScheduleServlet.class
 com\roba\scheduler\servlet\student\EnrollServlet.class
+com\roba\scheduler\servlet\admin\IDManagementServlet.class
 com\roba\scheduler\servlet\student\DropClassServlet.class
 com\roba\scheduler\servlet\admin\SemesterServlet.class
 com\roba\scheduler\servlet\auth\LoginServlet.class
@@ -35,6 +36,7 @@ com\roba\scheduler\model\User.class
 com\roba\scheduler\servlet\student\StudentDashboardServlet.class
 com\roba\scheduler\model\TimeSlot.class
 com\roba\scheduler\servlet\student\EnrollCourseServlet.class
+com\roba\scheduler\util\IDManager.class
 com\roba\scheduler\servlet\admin\ClassroomServlet.class
 com\roba\scheduler\servlet\admin\CourseListServlet.class
 com\roba\scheduler\servlet\auth\LogoutServlet.class

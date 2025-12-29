@@ -30,7 +30,7 @@ Admin: admin / admin123
 Student: student1 / student123
 
 After Login (if successful):
-Admin login → Redirects to: http://localhost:8080/StudentClassScheduler/admin/dashboard.html
+Admin login → Redirects to: http://localhost:8080/StudentClassScheduler/admin/dashboard.jsp
 
 Direct Admin Pages (require login):
 🔗 http://localhost:8080/StudentClassScheduler/admin/dashboard.html

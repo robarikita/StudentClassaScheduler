@@ -29,8 +29,8 @@ public class ClassroomServlet extends HttpServlet {
 
         String action = request.getParameter("action");
 
-        if ("toggle".equals(action)) {
-            toggleClassroom(request, response);
+        if ("delete".equals(action)) {
+            deleteClassroom(request, response);  // CHANGED FROM "toggle" TO "delete"
         } else {
             addClassroom(request, response);
         }
@@ -91,32 +91,21 @@ public class ClassroomServlet extends HttpServlet {
         }
     }
 
-    private void toggleClassroom(HttpServletRequest request, HttpServletResponse response)
+    private void deleteClassroom(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         try {
             int roomId = Integer.parseInt(request.getParameter("roomId"));
 
             ClassroomDAO classroomDAO = new ClassroomDAO();
-            Classroom classroom = classroomDAO.getClassroomById(roomId);
-
-            if (classroom == null) {
-                response.sendRedirect(request.getContextPath() +
-                    "/admin/classrooms.jsp?error=Classroom+not+found");
-                return;
-            }
-
-            classroom.setIsActive(!classroom.getIsActive());
-            boolean success = classroomDAO.updateClassroom(classroom);
+            boolean success = classroomDAO.deleteClassroom(roomId);  // Now calls hard delete
 
             if (success) {
-                String message = classroom.getIsActive() ?
-                    "Classroom+activated+successfully" : "Classroom+deactivated+successfully";
                 response.sendRedirect(request.getContextPath() +
-                    "/admin/classrooms.jsp?message=" + message);
+                    "/admin/classrooms.jsp?message=Classroom+deleted+successfully+from+database");
             } else {
                 response.sendRedirect(request.getContextPath() +
-                    "/admin/classrooms.jsp?error=Failed+to+update+classroom");
+                    "/admin/classrooms.jsp?error=Failed+to+delete+classroom+(may+be+in+use+by+scheduled+classes)");
             }
 
         } catch (NumberFormatException e) {

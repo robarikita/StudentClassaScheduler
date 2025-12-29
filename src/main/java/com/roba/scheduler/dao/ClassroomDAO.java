@@ -2,38 +2,20 @@ package com.roba.scheduler.dao;
 
 import com.roba.scheduler.model.Classroom;
 import com.roba.scheduler.util.DatabaseConnection;
+import com.roba.scheduler.util.IDManager;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClassroomDAO {
 
-    // Add new classroom
-    public boolean addClassroom(Classroom classroom) {
-        String sql = "INSERT INTO classrooms (room_number, building, capacity, room_type, has_projector, has_computers) VALUES (?, ?, ?, ?, ?, ?)";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, classroom.getRoomNumber());
-            stmt.setString(2, classroom.getBuilding());
-            stmt.setInt(3, classroom.getCapacity());
-            stmt.setString(4, classroom.getRoomType());
-            stmt.setBoolean(5, classroom.getHasProjector());
-            stmt.setBoolean(6, classroom.getHasComputers());
-
-            return stmt.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
     // Get all classrooms
     public List<Classroom> getAllClassrooms() {
         List<Classroom> classrooms = new ArrayList<>();
-        String sql = "SELECT * FROM classrooms WHERE is_active = TRUE ORDER BY building, room_number";
+        // REMOVED: WHERE is_active = TRUE - Now shows all classrooms
+        String sql = "SELECT * FROM classrooms ORDER BY building, room_number";
 
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
@@ -95,21 +77,24 @@ public class ClassroomDAO {
         }
     }
 
-    // Delete classroom (soft delete)
-    public boolean deleteClassroom(int roomId) {
-        String sql = "UPDATE classrooms SET is_active = FALSE WHERE room_id = ?";
+    // DELETE classroom permanently (HARD DELETE - NEW METHOD)
+    public boolean deleteClassroomPermanently(int roomId) {
+        String sql = "DELETE FROM classrooms WHERE room_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, roomId);
-            return stmt.executeUpdate() > 0;
+            pstmt.setInt(1, roomId);
+            int rowsAffected = pstmt.executeUpdate();
+
+            return rowsAffected > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
+
 
     // Find available classrooms for a time slot and capacity
     public List<Classroom> getAvailableClassrooms(int slotId, int semesterId, int minCapacity) {
@@ -156,5 +141,61 @@ public class ClassroomDAO {
         classroom.setHasComputers(rs.getBoolean("has_computers"));
         classroom.setIsActive(rs.getBoolean("is_active"));
         return classroom;
+    }
+        // Add new classroom with smart ID reuse
+    public boolean addClassroom(Classroom classroom) {
+        // Get next available ID (reuse deleted IDs)
+        int nextId = IDManager.getNextAvailableId("classrooms", "room_id");
+
+        String sql = "INSERT INTO classrooms (room_id, room_number, building, capacity, room_type, has_projector, has_computers, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, nextId);
+            stmt.setString(2, classroom.getRoomNumber());
+            stmt.setString(3, classroom.getBuilding());
+            stmt.setInt(4, classroom.getCapacity());
+            stmt.setString(5, classroom.getRoomType());
+            stmt.setBoolean(6, classroom.getHasProjector());
+            stmt.setBoolean(7, classroom.getHasComputers());
+            stmt.setBoolean(8, true); // Always active when newly created
+
+            boolean success = stmt.executeUpdate() > 0;
+
+            // Fix auto-increment to avoid conflicts
+            if (success) {
+                IDManager.fixAutoIncrement("classrooms", "room_id");
+            }
+
+            return success;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Delete classroom and fix IDs
+    public boolean deleteClassroom(int roomId) {
+        String sql = "DELETE FROM classrooms WHERE room_id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, roomId);
+            boolean success = pstmt.executeUpdate() > 0;
+
+            // Fix auto-increment after delete
+            if (success) {
+                IDManager.fixAutoIncrement("classrooms", "room_id");
+            }
+
+            return success;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

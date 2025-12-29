@@ -40,76 +40,6 @@ public class InstructorServlet extends HttpServlet {
         }
     }
 
-    private void addInstructor(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        try {
-            String firstName = request.getParameter("firstName");
-            String lastName = request.getParameter("lastName");
-            String email = request.getParameter("email");
-            String department = request.getParameter("department");
-            String officeNumber = request.getParameter("officeNumber");
-            String phone = request.getParameter("phone");
-            int maxCourses = request.getParameter("maxCourses") != null ?
-                Integer.parseInt(request.getParameter("maxCourses")) : 3;
-
-            // Validate
-            if (firstName == null || firstName.trim().isEmpty() ||
-                lastName == null || lastName.trim().isEmpty() ||
-                email == null || email.trim().isEmpty() ||
-                department == null || department.trim().isEmpty()) {
-
-                response.sendRedirect(request.getContextPath() +
-                    "/admin/instructors.jsp?error=Required+fields+are+missing");
-                return;
-            }
-
-            // First, check if a user account already exists for this email
-            int userId = getUserIdByEmail(email);
-
-            if (userId == -1) {
-                // Create a new user account
-                userId = createUserAccount(firstName, lastName, email);
-
-                if (userId == -1) {
-                    response.sendRedirect(request.getContextPath() +
-                        "/admin/instructors.jsp?error=Failed+to+create+user+account");
-                    return;
-                }
-            }
-
-            // Now create instructor record
-            Instructor instructor = new Instructor();
-            instructor.setUserId(userId);
-            instructor.setFirstName(firstName);
-            instructor.setLastName(lastName);
-            instructor.setEmail(email);
-            instructor.setDepartment(department);
-            instructor.setOfficeNumber(officeNumber);
-            instructor.setPhone(phone);
-            instructor.setMaxCoursesPerSemester(maxCourses);
-
-            InstructorDAO instructorDAO = new InstructorDAO();
-            boolean success = instructorDAO.addInstructor(instructor);
-
-            if (success) {
-                String msg = "Instructor added successfully";
-                response.sendRedirect(request.getContextPath() +
-                    "/admin/instructors.jsp?message=" + java.net.URLEncoder.encode(msg, "UTF-8"));
-            } else {
-                response.sendRedirect(request.getContextPath() +
-                    "/admin/instructors.jsp?error=Failed+to+add+instructor");
-            }
-
-        } catch (NumberFormatException e) {
-            response.sendRedirect(request.getContextPath() +
-                "/admin/instructors.jsp?error=Invalid+max+courses+value");
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect(request.getContextPath() +
-                "/admin/instructors.jsp?error=Server+error");
-        }
-    }
 
     private void deleteInstructor(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -125,7 +55,7 @@ public class InstructorServlet extends HttpServlet {
                     "/admin/instructors.jsp?message=Instructor+deleted+successfully");
             } else {
                 response.sendRedirect(request.getContextPath() +
-                    "/admin/instructors.jsp?error=Failed+to+delete+instructor");
+                    "/admin/instructors.jsp?error=Failed+to+delete+instructor+(may+be+teaching+classes)");
             }
 
         } catch (NumberFormatException e) {
@@ -222,4 +152,62 @@ public class InstructorServlet extends HttpServlet {
 
         return false;
     }
+
+    private void addInstructor(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+
+    try {
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String email = request.getParameter("email");
+        String department = request.getParameter("department");
+        String officeNumber = request.getParameter("officeNumber");
+        String phone = request.getParameter("phone");
+        int maxCourses = request.getParameter("maxCourses") != null ?
+            Integer.parseInt(request.getParameter("maxCourses")) : 3;
+
+        // Validate
+        if (firstName == null || firstName.trim().isEmpty() ||
+            lastName == null || lastName.trim().isEmpty() ||
+            email == null || email.trim().isEmpty() ||
+            department == null || department.trim().isEmpty()) {
+
+            response.sendRedirect(request.getContextPath() +
+                "/admin/instructors.jsp?error=Required+fields+are+missing");
+            return;
+        }
+
+        // Now create instructor record WITHOUT setting userId
+        Instructor instructor = new Instructor();
+        // DO NOT set userId - let it remain 0 (default for int)
+
+        instructor.setFirstName(firstName);
+        instructor.setLastName(lastName);
+        instructor.setEmail(email);
+        instructor.setDepartment(department);
+        instructor.setOfficeNumber(officeNumber);
+        instructor.setPhone(phone);
+        instructor.setMaxCoursesPerSemester(maxCourses);
+
+        InstructorDAO instructorDAO = new InstructorDAO();
+        boolean success = instructorDAO.addInstructor(instructor);
+
+        if (success) {
+            String msg = "Instructor added successfully";
+            response.sendRedirect(request.getContextPath() +
+                "/admin/instructors.jsp?message=" + java.net.URLEncoder.encode(msg, "UTF-8"));
+        } else {
+            response.sendRedirect(request.getContextPath() +
+                "/admin/instructors.jsp?error=Failed+to+add+instructor");
+        }
+
+    } catch (NumberFormatException e) {
+        response.sendRedirect(request.getContextPath() +
+            "/admin/instructors.jsp?error=Invalid+max+courses+value");
+    } catch (Exception e) {
+        e.printStackTrace();
+        response.sendRedirect(request.getContextPath() +
+            "/admin/instructors.jsp?error=Server+error");
+    }
+}
 }

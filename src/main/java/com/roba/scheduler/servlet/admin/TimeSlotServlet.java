@@ -112,7 +112,7 @@ public class TimeSlotServlet extends HttpServlet {
                     "/admin/time-slots.jsp?message=Time+slot+deleted+successfully");
             } else {
                 response.sendRedirect(request.getContextPath() +
-                    "/admin/time-slots.jsp?error=Failed+to+delete+time+slot");
+                    "/admin/time-slots.jsp?error=Failed+to+delete+time+slot+(may+be+in+use)");
             }
 
         } catch (NumberFormatException e) {

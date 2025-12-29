@@ -2,6 +2,8 @@ package com.roba.scheduler.dao;
 
 import com.roba.scheduler.model.Student;
 import com.roba.scheduler.util.DatabaseConnection;
+import com.roba.scheduler.util.IDManager;
+
 import java.sql.*;
 
 public class StudentDAO {
@@ -29,6 +31,60 @@ public class StudentDAO {
             e.printStackTrace();
         }
         return student;
+    }
+      // Add new student with smart ID reuse
+    public boolean addStudent(Student student) {
+        // Get next available ID (reuse deleted IDs)
+        int nextId = IDManager.getNextAvailableId("students", "student_id");
+
+        String sql = "INSERT INTO students (student_id, user_id, first_name, last_name, email, major) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, nextId);
+            stmt.setInt(2, student.getUserId());
+            stmt.setString(3, student.getFirstName());
+            stmt.setString(4, student.getLastName());
+            stmt.setString(5, student.getEmail());
+            stmt.setString(6, student.getMajor());
+
+            boolean success = stmt.executeUpdate() > 0;
+
+            // Fix auto-increment to avoid conflicts
+            if (success) {
+                IDManager.fixAutoIncrement("students", "student_id");
+            }
+
+            return success;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Delete student and fix IDs
+    public boolean deleteStudent(int studentId) {
+        String sql = "DELETE FROM students WHERE student_id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, studentId);
+            boolean success = stmt.executeUpdate() > 0;
+
+            // Fix auto-increment after delete
+            if (success) {
+                IDManager.fixAutoIncrement("students", "student_id");
+            }
+
+            return success;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // In StudentDAO.java, add this method if you want to keep the original code
