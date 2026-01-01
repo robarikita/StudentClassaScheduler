@@ -33,11 +33,11 @@ public class AddCourseServlet extends HttpServlet {
             course.setDescription(description);
             course.setCredits(credits);
 
-            // Add to database
+            
             CourseDAO courseDAO = new CourseDAO();
             boolean success = courseDAO.addCourse(course);
 
-            // Set message
+            
             if (success) {
                 session.setAttribute("message", "Course added successfully!");
                 session.setAttribute("messageType", "success");
