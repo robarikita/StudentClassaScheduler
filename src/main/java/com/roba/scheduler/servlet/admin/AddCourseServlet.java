@@ -9,7 +9,7 @@ import java.io.IOException;
 
 @WebServlet("/admin/AddCourseServlet")
 public class AddCourseServlet extends HttpServlet {
-    @Override
+    
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
