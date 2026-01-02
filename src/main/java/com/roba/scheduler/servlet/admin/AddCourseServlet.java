@@ -20,13 +20,13 @@ public class AddCourseServlet extends HttpServlet {
         }
 
         try {
-            // Get form data
+          
             String courseCode = request.getParameter("courseCode");
             String courseName = request.getParameter("courseName");
             String description = request.getParameter("description");
             int credits = Integer.parseInt(request.getParameter("credits"));
 
-            // Create Course object
+           
             Course course = new Course();
             course.setCourseCode(courseCode);
             course.setCourseName(courseName);
@@ -46,7 +46,7 @@ public class AddCourseServlet extends HttpServlet {
                 session.setAttribute("messageType", "error");
             }
 
-            // Redirect to courses list
+            
             response.sendRedirect("ListCoursesServlet");
 
         } catch (NumberFormatException e) {
