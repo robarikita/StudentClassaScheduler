@@ -11,10 +11,9 @@ import java.util.List;
 public class ClassroomDAO {
 
 
-    // Get all classrooms
+    
     public List<Classroom> getAllClassrooms() {
         List<Classroom> classrooms = new ArrayList<>();
-        // REMOVED: WHERE is_active = TRUE - Now shows all classrooms
         String sql = "SELECT * FROM classrooms ORDER BY building, room_number";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -32,7 +31,6 @@ public class ClassroomDAO {
         return classrooms;
     }
 
-    // Get classroom by ID
     public Classroom getClassroomById(int roomId) {
         String sql = "SELECT * FROM classrooms WHERE room_id = ?";
 
@@ -77,7 +75,6 @@ public class ClassroomDAO {
         }
     }
 
-    // DELETE classroom permanently (HARD DELETE - NEW METHOD)
     public boolean deleteClassroomPermanently(int roomId) {
         String sql = "DELETE FROM classrooms WHERE room_id = ?";
 
@@ -96,7 +93,6 @@ public class ClassroomDAO {
     }
 
 
-    // Find available classrooms for a time slot and capacity
     public List<Classroom> getAvailableClassrooms(int slotId, int semesterId, int minCapacity) {
         List<Classroom> classrooms = new ArrayList<>();
         String sql = """
