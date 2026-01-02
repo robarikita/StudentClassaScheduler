@@ -51,7 +51,7 @@ public class SemesterServlet extends HttpServlet {
             Date registrationEnd = Date.valueOf(request.getParameter("registrationEnd"));
             boolean isActive = "true".equals(request.getParameter("isActive"));
 
-            // Validate
+            
             if (semesterCode == null || semesterCode.trim().isEmpty() ||
                 semesterName == null || semesterName.trim().isEmpty()) {
 
@@ -124,7 +124,6 @@ public class SemesterServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() +
                     "/admin/semesters.jsp?error=Failed+to+activate+semester");
             }
-
         } catch (NumberFormatException e) {
             response.sendRedirect(request.getContextPath() +
                 "/admin/semesters.jsp?error=Invalid+semester+ID");
@@ -134,9 +133,8 @@ public class SemesterServlet extends HttpServlet {
                 "/admin/semesters.jsp?error=Server+error");
         }
     }
-
     private void deleteSemester(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException{
 
         try {
             int semesterId = Integer.parseInt(request.getParameter("semesterId"));
