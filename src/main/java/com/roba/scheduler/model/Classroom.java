@@ -10,7 +10,7 @@ public class Classroom {
     private boolean hasComputers;
     private boolean isActive;
 
-    // Constructors
+    
     public Classroom() {}
 
     public Classroom(String roomNumber, String building, int capacity) {
@@ -19,7 +19,6 @@ public class Classroom {
         this.capacity = capacity;
     }
 
-    // Getters and Setters
     public int getRoomId() { return roomId; }
     public void setRoomId(int roomId) { this.roomId = roomId; }
 
@@ -44,7 +43,6 @@ public class Classroom {
     public boolean getIsActive() { return isActive; }
     public void setIsActive(boolean isActive) { this.isActive = isActive; }
 
-    // Helper methods
     public String getFullRoomName() {
         return building + " " + roomNumber;
     }
