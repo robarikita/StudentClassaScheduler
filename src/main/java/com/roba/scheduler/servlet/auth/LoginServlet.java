@@ -50,13 +50,11 @@ public class LoginServlet extends HttpServlet {
             System.out.println("  - role: " + session.getAttribute("role"));
             System.out.println("  - username: " + session.getAttribute("username"));
 
-            // Role-based redirection
             if ("admin".equals(user.getRole())) {
                 System.out.println("Redirecting admin to dashboard.jsp");
                 response.sendRedirect(request.getContextPath() + "/admin/dashboard.jsp");
             } else if ("student".equals(user.getRole())) {
                 System.out.println("Redirecting student to DashboardServlet");
-                // Get student info
                 StudentDAO studentDAO = new StudentDAO();
                 Student student = studentDAO.getStudentByUserId(user.getUserId());
                 if (student != null) {
